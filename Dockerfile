@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y vim xterm pulseaudio cups 
 
 RUN apt-get -y dist-upgrade 
-RUN apt-get install -y  mate-desktop-environment-core mate-desktop-environment mate-indicator-applet ubuntu-mate-themes ubuntu-mate-wallpapers chromium-browser firefox nano sudo
+RUN apt-get install -y  mate-desktop-environment-core mate-desktop-environment mate-indicator-applet ubuntu-mate-themes ubuntu-mate-wallpapers firefox sudo
 
 RUN apt-get install -y wget
 
@@ -19,7 +19,18 @@ RUN apt-get clean
 RUN apt-get autoclean
 
 RUN echo 'pref("browser.tabs.remote.autostart", false);' >> /usr/lib/firefox/browser/defaults/preferences/vendor-firefox.js
-RUN rm -rf /var/lib/apt/lists/*
+
+#Instalar ldap client
+RUN apt-get update && apt-get install libpam-ldap libnss-ldap nss-updatedb libnss-db nscd ldap-utils timezone -y
+
+# enable ldap user authentification
+RUN sed -i 's/^\(passwd\|group\|shadow\):\(.*\)/#\1: \2/gm' /etc/nsswitch.conf &&\
+    sed -i '$a passwd: files ldap' /etc/nsswitch.conf &&\
+    sed -i '$a group: files ldap' /etc/nsswitch.conf &&\
+    sed -i '$a shadow: files ldap' /etc/nsswitch.conf &&\
+    # set timezone
+    ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+ 
 
 RUN groupadd -r nomachine -g 433 && \
 useradd -u 431 -r -g nomachine -d /home/nomachine -s /bin/bash -c "NoMachine" nomachine && \
