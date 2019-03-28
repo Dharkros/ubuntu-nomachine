@@ -41,6 +41,7 @@ echo 'nomachine:nomachine' | chpasswd
 RUN echo "nomachine    ALL=(ALL) ALL" >> /etc/sudoers
 
 EXPOSE 4000
+EXPOSE 22
 
 VOLUME [ "/home/nomachine" ]
 
