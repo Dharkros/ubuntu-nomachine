@@ -21,7 +21,7 @@ RUN apt-get autoclean
 RUN echo 'pref("browser.tabs.remote.autostart", false);' >> /usr/lib/firefox/browser/defaults/preferences/vendor-firefox.js
 
 #Instalar ldap client
-RUN apt-get update && apt-get install libpam-ldap libnss-ldap nss-updatedb libnss-db nscd ldap-utils timezone -y
+RUN apt-get update && apt-get install libpam-ldap libnss-ldap nss-updatedb libnss-db nscd ldap-utils -y
 
 # enable ldap user authentification
 RUN sed -i 's/^\(passwd\|group\|shadow\):\(.*\)/#\1: \2/gm' /etc/nsswitch.conf &&\
