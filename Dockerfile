@@ -29,7 +29,7 @@ RUN sed -i 's/^\(passwd\|group\|shadow\):\(.*\)/#\1: \2/gm' /etc/nsswitch.conf &
     sed -i '$a group: files ldap' /etc/nsswitch.conf &&\
     sed -i '$a shadow: files ldap' /etc/nsswitch.conf &&\
     # set timezone
-    ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+    # ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
  
 
 RUN groupadd -r nomachine -g 433 && \
@@ -45,6 +45,7 @@ EXPOSE 22
 
 VOLUME [ "/home/nomachine" ]
 
+ADD nxserver.sh /
 ADD nxserver.sh /
 
 RUN chmod +x /nxserver.sh
