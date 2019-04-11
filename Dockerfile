@@ -21,7 +21,8 @@ RUN apt-get autoclean
 RUN echo 'pref("browser.tabs.remote.autostart", false);' >> /usr/lib/firefox/browser/defaults/preferences/vendor-firefox.js
 
 #Instalar ldap client
-RUN apt-get update && apt-get install libpam-ldap libnss-ldap nss-updatedb libnss-db nscd ldap-utils -y
+#RUN apt-get update && apt-get install libpam-ldap libnss-ldap nss-updatedb libnss-db nscd ldap-utils -y
+RUN apt-get update && apt-get install libpam-ldap nscd -y
 
 # enable ldap user authentification
 RUN sed -i 's/^\(passwd\|group\|shadow\):\(.*\)/#\1: \2/gm' /etc/nsswitch.conf &&\
@@ -33,12 +34,12 @@ RUN sed -i 's/^\(passwd\|group\|shadow\):\(.*\)/#\1: \2/gm' /etc/nsswitch.conf &
  
 
 RUN groupadd -r nomachine -g 433 && \
-useradd -u 431 -r -g nomachine -d /home/nomachine -s /bin/bash -c "NoMachine" nomachine && \
-mkdir /home/nomachine && \
-chown -R nomachine:nomachine /home/nomachine && \
-echo 'nomachine:nomachine' | chpasswd
+useradd -u 431 -r -g santiagoamo -d /home/santiagoamo -s /bin/bash -c "NoMachine" nomachine && \
+mkdir /home/santiagoamo && \
+chown -R santiagoamo:santiagoamo /home/santiagoamo && \
+echo 'santiagoamo:nomachine' | chpasswd
 
-RUN echo "nomachine    ALL=(ALL) ALL" >> /etc/sudoers
+RUN echo "santiagoamo    ALL=(ALL) ALL" >> /etc/sudoers
 
 EXPOSE 4000
 EXPOSE 22
@@ -47,7 +48,10 @@ VOLUME [ "/home/nomachine" ]
 
 ADD nxserver.sh /
 ADD nxserver.sh /
+ADD ldap.sh
 
 RUN chmod +x /nxserver.sh
+RUN chmod +x /ldap.sh
 
 ENTRYPOINT ["/nxserver.sh"]
+ENTRYPOINT ["/ldap.sh"]
